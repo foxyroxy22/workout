@@ -235,6 +235,8 @@ nav.tabs button[aria-pressed="true"] svg{fill:currentColor;fill-opacity:.0;strok
 .xc.now .field input{height:42px}
 .xc.now .chk{width:42px;height:42px}
 .setbtns{display:flex;justify-content:space-between}
+.nm.rn{border:0;background:none;padding:0;text-align:left;display:flex;align-items:center;gap:6px;color:inherit;font:inherit;font-size:23px;font-weight:700;letter-spacing:-0.04em}
+.nm.rn svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;opacity:.35}
 .mini:disabled{opacity:.35}
 .tl .tcard{margin-bottom:8px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -272,11 +274,11 @@ const MONF=['January','February','March','April','May','June','July','August','S
 const uid_=()=>Math.random().toString(36).slice(2,9);
 const ex=(name,sets,reps,rest)=>({id:uid_(),name,sets,reps,rest});
 function defaultRoutine(){return {
-  1:{title:'Glutes + Hamstrings',items:[ex('Hip Abduction',3,'15',60),ex('Hip Thrust',3,'8–10',120),ex('Bench RDL',3,'8–10',120),ex('45° Back Extension',3,'12',90),ex('Sit-ups',3,'15',45)]},
-  2:{title:'Back + Biceps',items:[ex('Assisted Pull-up',3,'8',90),ex('Seated Row',3,'10',90),ex('Lat Pulldown (V-bar)',3,'10',90),ex('Biceps Curl',3,'12',60),ex('Plank',3,'40s',45)]},
-  3:{title:'Chest + Shoulders + Triceps',items:[ex('Chest Press',3,'10',90),ex('Shoulder Press',3,'10',90),ex('Triceps',3,'12',60),ex('Face Pull',3,'15',60),ex('Sit-ups',3,'15',45)]},
-  4:{title:'Glutes + Quads',items:[ex('Hip Abduction',3,'20',60),ex('Wide Squat',3,'12–15',90),ex('Bulgarian Split Squat',3,'12',90),ex('Hip Thrust (light)',3,'15',75)]},
-  5:{title:'Back + Rear Delts',items:[ex('Seated Row',3,'10',90),ex('Lat Pulldown',3,'10',90),ex('Shoulder Press',3,'10',90),ex('Face Pull',3,'15',60),ex('Plank',3,'40s',45)]}
+  1:{title:'Glutes + Hamstrings',items:[ex('Hip Abduction',3,'15',60),ex('Hip Thrust',3,'8–10',60),ex('Bench RDL',3,'8–10',60),ex('45° Back Extension',3,'12',60),ex('Sit-ups',3,'15',60)]},
+  2:{title:'Back + Biceps',items:[ex('Assisted Pull-up',3,'8',60),ex('Seated Row',3,'10',60),ex('Lat Pulldown (V-bar)',3,'10',60),ex('Biceps Curl',3,'12',60),ex('Plank',3,'40s',60)]},
+  3:{title:'Chest + Shoulders + Triceps',items:[ex('Chest Press',3,'10',60),ex('Shoulder Press',3,'10',60),ex('Triceps',3,'12',60),ex('Face Pull',3,'15',60),ex('Sit-ups',3,'15',60)]},
+  4:{title:'Glutes + Quads',items:[ex('Hip Abduction',3,'20',60),ex('Wide Squat',3,'12–15',60),ex('Bulgarian Split Squat',3,'12',60),ex('Hip Thrust (light)',3,'15',60)]},
+  5:{title:'Back + Rear Delts',items:[ex('Seated Row',3,'10',60),ex('Lat Pulldown',3,'10',60),ex('Shoulder Press',3,'10',60),ex('Face Pull',3,'15',60),ex('Plank',3,'40s',60)]}
 };}
 const DEFAULT_GOALS='Grow glutes; defined upper back (around the shoulder blades) and nice shoulder line; stronger core. Don\'t want lats or traps to look bulky. Bad knees, so prefer knee-friendly exercises. Hard to gain muscle, also hard to gain fat. Glute days always start with hip abduction.';
 const KO_EN={'힙 어브덕션':'Hip Abduction','힙 쓰러스트':'Hip Thrust','벤치 RDL':'Bench RDL','45도 백익스텐션':'45° Back Extension','윗몸일으키기':'Sit-ups','어시스트 풀업':'Assisted Pull-up','시티드 로우':'Seated Row','랫풀다운 (V바)':'Lat Pulldown (V-bar)','랫풀다운':'Lat Pulldown','바이셉 컬':'Biceps Curl','플랭크':'Plank','체스트 프레스':'Chest Press','숄더 프레스':'Shoulder Press','트라이셉 운동':'Triceps','페이스풀':'Face Pull','와이드 스쿼트':'Wide Squat','불가리안 스플릿 스쿼트':'Bulgarian Split Squat','힙 쓰러스트 (가볍게)':'Hip Thrust (light)','엉덩이 + 햄스트링':'Glutes + Hamstrings','등 + 이두':'Back + Biceps','가슴 · 어깨 · 삼두':'Chest + Shoulders + Triceps','엉덩이 + 쿼드':'Glutes + Quads','등 + 어깨 뒤':'Back + Rear Delts','40초':'40s'};
@@ -299,6 +301,8 @@ if(!S.mig1)abductionFirst();
 if(!S.mig2)toEnglish();
 function threeSets(){for(const d in S.routine)S.routine[d].items.forEach(it=>{if(it.sets===4)it.sets=3});S.mig3=true}
 if(!S.mig3)threeSets();
+function restOneMin(){for(const d in S.routine)S.routine[d].items.forEach(it=>{it.rest=60});S.mig4=true}
+if(!S.mig4)restOneMin();
 
 const pad=n=>String(n).padStart(2,'0');
 const ds=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
@@ -326,7 +330,7 @@ function saveLocal(){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}}
 function deb(k,fn){clearTimeout(tmr[k]);tmr[k]=setTimeout(fn,700)}
 function monthDoc(m){const o={};for(const k in S.sessions)if(k.slice(0,7)===m)o[k]=S.sessions[k];return o}
 async function put(id,body){if(!col)return;try{await col.doc(id).set(body);setSync('Synced')}catch(e){setSync('Saved on this device')}}
-const saveState=()=>{saveLocal();deb('state',()=>put('state',{routine:S.routine,goals:S.goals,mig1:!!S.mig1,mig2:!!S.mig2,mig3:!!S.mig3}))};
+const saveState=()=>{saveLocal();deb('state',()=>put('state',{routine:S.routine,goals:S.goals,mig1:!!S.mig1,mig2:!!S.mig2,mig3:!!S.mig3,mig4:!!S.mig4}))};
 const saveSession=k=>{saveLocal();const m=k.slice(0,7);deb('m'+m,()=>put('m-'+m,{s:monthDoc(m)}))};
 const saveInbody=()=>{saveLocal();deb('ib',()=>put('inbody',{entries:S.inbody}))};
 const saveAnalysis=()=>{saveLocal();put('analysis',S.analysis||{})};
@@ -341,15 +345,16 @@ async function connect(){
     if(d&&u){const id=await u.id();
       if(id){col=d.collection('data/users/'+id);const snap=await col.get();const got={};
         for(const doc of snap.docs){const b=doc.data()||{};got[doc.id]=1;
-          if(doc.id==='state'){if(b.routine)S.routine=b.routine;if(b.goals)S.goals=b.goals;S.mig1=!!b.mig1;S.mig2=!!b.mig2;S.mig3=!!b.mig3}
+          if(doc.id==='state'){if(b.routine)S.routine=b.routine;if(b.goals)S.goals=b.goals;S.mig1=!!b.mig1;S.mig2=!!b.mig2;S.mig3=!!b.mig3;S.mig4=!!b.mig4}
           else if(doc.id==='inbody'&&b.entries)S.inbody=b.entries;
           else if(doc.id==='analysis'&&b.text)S.analysis=b;
           else if(doc.id.startsWith('m-')&&b.s)Object.assign(S.sessions,b.s);}
         if(!S.mig1&&abductionFirst())got.state=0;
         if(!S.mig3){threeSets();got.state=0}
+        if(!S.mig4){restOneMin();got.state=0}
         if(!S.mig2){toEnglish();got.state=0;new Set(Object.keys(S.sessions).map(k=>k.slice(0,7))).forEach(m=>{got['m-'+m]=0})}
         saveLocal();
-        if(!got.state)put('state',{routine:S.routine,goals:S.goals,mig1:!!S.mig1,mig2:!!S.mig2,mig3:!!S.mig3});
+        if(!got.state)put('state',{routine:S.routine,goals:S.goals,mig1:!!S.mig1,mig2:!!S.mig2,mig3:!!S.mig3,mig4:!!S.mig4});
         if(!got.inbody&&S.inbody.length)put('inbody',{entries:S.inbody});
         if(!got.analysis&&S.analysis)put('analysis',S.analysis);
         new Set(Object.keys(S.sessions).map(k=>k.slice(0,7))).forEach(m=>{if(!got['m-'+m])put('m-'+m,{s:monthDoc(m)})});
@@ -459,15 +464,19 @@ function workView(){
     let card;
     if(expanded){
       let sets='';
-      for(let i=0;i<n;i++){const s=(rec&&rec.sets[i])||{};const ps=prev?prev.sets[Math.min(i,prev.sets.length-1)]:null;
-        const wph=ps&&num(ps.w)?num(ps.w):'',rph=ps&&ps.r?num(ps.r)||'':num(it.reps)||'';
+      let carryW='',carryR='';
+      for(let i=0;i<n;i++){const s=(rec&&rec.sets[i])||{};const ps=prev&&i<prev.sets.length?prev.sets[i]:null;
+        // auto-fill: this set's saved value > previous session's same set > the set above
+        const wv=s.w!=null&&s.w!==''?s.w:(ps&&num(ps.w)?String(num(ps.w)):carryW);
+        const rv=s.r!=null&&s.r!==''?s.r:(ps&&num(ps.r)?String(num(ps.r)):carryR);
+        carryW=wv;carryR=rv;const wph='',rph=num(it.reps)||'';
         sets+=`<div class="set ${s.done?'done':''}" data-ex="${idx}" data-i="${i}"><span class="n">${i+1}</span>
-          <label class="field"><input inputmode="decimal" enterkeyhint="next" data-f="w" value="${esc(s.w??'')}" placeholder="${esc(wph)}" aria-label="Set ${i+1} weight"><span>kg</span></label>
-          <label class="field"><input inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" data-f="r" value="${esc(s.r??'')}" placeholder="${esc(rph)}" aria-label="Set ${i+1} reps"><span>${/s$|초/.test(it.reps)?'sec':'reps'}</span></label>
+          <label class="field"><input inputmode="decimal" enterkeyhint="next" data-f="w" value="${esc(wv)}" placeholder="${esc(wph)}" aria-label="Set ${i+1} weight"><span>kg</span></label>
+          <label class="field"><input inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" data-f="r" value="${esc(rv)}" placeholder="${esc(rph)}" aria-label="Set ${i+1} reps"><span>${/s$|초/.test(it.reps)?'sec':'reps'}</span></label>
           <button class="chk" data-act="chk" aria-label="Complete set ${i+1}">${S_CHK}</button></div>`}
       card=`<div class="xc now">
         <div class="meta">${dn}/${n} sets · ${esc(it.reps)} · rest ${restTxt(it.rest)}</div>
-        <div class="nm">${esc(it.name)}</div><div class="last">${prevTxt}</div>
+        <button class="nm rn" data-act="rename" data-ex="${idx}" aria-label="Rename ${esc(it.name)}">${esc(it.name)}<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button><div class="last">${prevTxt}</div>
         <div class="sets">${sets}</div>
         <div class="setbtns"><button class="mini" data-act="rmset" data-ex="${idx}" ${n<=1?'disabled':''}>− Remove set</button><button class="mini" data-act="addset" data-ex="${idx}">+ Add set</button></div>
         <button class="finish" data-act="finish" data-ex="${idx}">${S_CHK}<span>Finish exercise</span></button></div>`;
@@ -539,7 +548,7 @@ function aiView(){
   const dlt=k=>{if(!last||!prev||last[k]==null||prev[k]==null)return '';const d=r1(last[k]-prev[k]);return `${d>0?'+':''}${d} vs last`};
   let html=`<div class="hrow"><div class="kicker">${ib.length?`${ib.length} scans · last ${mdS(last.date)}`:'InBody + training'}</div>${syncEl()}</div>
     <div class="hrow"><h1 class="title">Check your<br>body</h1><button class="rbtn" data-act="ibadd" aria-label="Add InBody result" ${ibBusy?'disabled':''}>${S_PLUS}</button></div>`;
-  if(ibBusy)html+=`<div class="card busy">${gi('bolt')}${esc(ibBusy)}</div>`;
+  if(ibBusy)html+=`<div class="card busy">${gi('bolt')}<span class="t">${esc(ibBusy)}</span></div>`;
   if(ibDraft){
     html+=`<div class="card"><div class="ch"><span class="cl">${gi('scale')}${ibDraft._auto?'Check the values':'Enter InBody manually'}</span></div>${ibDraft._fail?'<p class="note">Couldn\'t read it automatically. Enter the values from your result.</p>':''}
       <div class="fgrid"><label style="grid-column:1/-1">Date<input class="txt" type="date" data-ib="date" value="${esc(ibDraft.date)}"></label>
@@ -567,9 +576,11 @@ function aiView(){
   html+=`<div class="card"><div class="ch"><span class="cl">${gi('bolt')}Sets by area · 4 weeks</span></div>${gk.length?`<div class="hb">${gk.map((k,i)=>`<div class="hbr ${i===0?'top':''}"><span>${k}</span><div class="hbt"><i style="width:${Math.max(8,g[k]/gm*100)}%"></i></div><b>${g[k]}</b></div>`).join('')}</div>`:'<p class="note">No logs in the last 4 weeks.</p>'}</div>`;
   const res=aiBusy?(aiLive?md(aiLive):'<p class="note">Reading your logs and InBody…</p>'):S.analysis?md(S.analysis.text):'';
   html+=`<div class="ftabs" style="margin-top:22px"><button class="ftab" aria-pressed="true">Coach</button></div>
-    <div class="sheet" style="min-height:0"><label class="lab" style="margin-top:0">My goals</label><textarea class="txt" data-in="goals">${esc(S.goals)}</textarea>
-    ${sample?`<div style="margin-top:10px">${aiBusy?'<button class="btn soft" data-act="aistop" style="background:var(--gray)">Stop</button>':'<button class="btn pri" data-act="ai">Analyze training + body</button>'}</div>`:'<p class="note">Open this page in the Claude app to use the coach.</p>'}
-    ${S.analysis&&!aiBusy?`<p class="note">Last analyzed ${esc(S.analysis.at)}</p>`:''}<div class="ai" id="aiout">${res}</div>
+    <div class="sheet" style="min-height:0">${insightsHTML()}
+    <label class="lab">My goals</label><textarea class="txt" data-in="goals">${esc(S.goals)}</textarea>
+    ${sample?`<div style="margin-top:10px">${aiBusy?'<button class="btn soft" data-act="aistop" style="background:var(--gray)">Stop</button>':'<button class="btn pri" data-act="ai">Ask Claude for deeper analysis</button>'}</div>
+      ${S.analysis&&!aiBusy?`<p class="note">Last analyzed ${esc(S.analysis.at)}</p>`:''}<div class="ai" id="aiout">${res}</div>`
+     :`<div style="margin-top:10px"><button class="btn pri" data-act="copyai">Copy data for Claude</button></div><p class="note">Want a deeper read? Copy, then paste it into a Claude chat. It uses your Claude plan, no extra cost.</p>`}
     ${ib.length?`<h2 class="sec" style="margin-top:24px">Scans</h2>${[...ib].reverse().map(e=>`<div class="ib-row"><div><div class="d">${mdS(e.date)}, ${e.date.slice(0,4)}</div><div class="m">Weight ${e.weight??'–'} · Muscle ${e.smm??'–'} · Fat ${e.pbf??'–'}%</div></div><button class="x" data-act="ibdel" data-id="${e.id}" aria-label="Delete" style="background:var(--gray)">×</button></div>`).join('')}`:''}</div>`;
   return html;
 }
@@ -594,34 +605,132 @@ const canvasBlob=c=>new Promise(r=>c.toBlob(r,'image/jpeg',.9));
 const IB_PROMPT=`다음은 인바디(InBody) 체성분 검사 결과지야. 값을 읽어서 아래 JSON 객체 하나만 반환해. 설명이나 코드펜스 없이 JSON만.
 {"date":"YYYY-MM-DD 또는 null(검사 일시)","weight":체중kg,"smm":골격근량kg,"fat":체지방량kg,"pbf":체지방률%,"bmi":BMI,"bmr":기초대사량kcal,"score":인바디점수}
 숫자는 숫자로, 결과지에 없거나 확실하지 않은 값은 null. 정상범위가 아니라 측정값을 읽어.`;
+/* --- local (no AI) parsing --- */
+const IB_LABELS={weight:['체중','Weight'],smm:['골격근량','Skeletal Muscle Mass','SMM'],fat:['체지방량','Body Fat Mass'],pbf:['체지방률','Percent Body Fat','PBF'],bmi:['BMI','신체질량지수'],bmr:['기초대사량','Basal Metabolic Rate','BMR'],score:['인바디점수','인바디 점수','InBody Score']};
+const IB_RANGE={weight:[25,200],smm:[5,80],fat:[1,100],pbf:[2,70],bmi:[10,60],bmr:[600,3500],score:[20,100]};
+function parseIB(text){
+  const t=text.replace(/\s+/g,' ');const out={};
+  for(const k in IB_LABELS){for(const lab of IB_LABELS[k]){
+    const re=new RegExp(lab.replace(/ /g,'\\s*')+'[^0-9]{0,40}?(\\d{1,4}(?:[.,]\\d{1,2})?)','gi');let m;
+    while((m=re.exec(t))){const v=parseFloat(m[1].replace(',','.'));const [lo,hi]=IB_RANGE[k];if(v>=lo&&v<=hi){out[k]=v;break}}
+    if(out[k]!=null)break}}
+  const d=t.match(/(20\d{2})\s*[.\-\/년]\s*(\d{1,2})\s*[.\-\/월]\s*(\d{1,2})/);
+  if(d)out.date=`${d[1]}-${pad(+d[2])}-${pad(+d[3])}`;
+  return Object.keys(out).length?out:null;
+}
+let tess=null;
+function loadTess(){return tess?Promise.resolve(tess):new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';s.onload=()=>{tess=window.Tesseract;res(tess)};s.onerror=rej;document.head.appendChild(s)})}
+async function ocr(src){
+  const T=await loadTess();
+  const {data}=await T.recognize(src,'kor+eng',{logger:m=>{if(m.status==='recognizing text'){ibBusy=`Reading text… ${Math.round(m.progress*100)}%`}else if(/load/.test(m.status)){ibBusy='Loading text reader (first time only)…'}const el=document.querySelector('.busy span.t');if(el)el.textContent=ibBusy}});
+  return data.text||'';
+}
+/* --- Claude API with your own key (web app outside Claude) --- */
+const KEY_LS='gymlog-key';
+let apiKey=''; // paid API disabled
+async function callAPI(content,model,max){
+  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model,max_tokens:max||1500,messages:[{role:'user',content}]})});
+  const j=await r.json();if(!r.ok)throw Object.assign(new Error(j.error&&j.error.message||'API error'),{status:r.status});
+  return (j.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n');
+}
+const toB64=blob=>new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(',')[1]);fr.onerror=rej;fr.readAsDataURL(blob)});
+async function shrinkImage(file){
+  const img=await createImageBitmap(file);const sc=Math.min(1,1800/Math.max(img.width,img.height));
+  const c=document.createElement('canvas');c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  return canvasBlob(c);
+}
+const parseJSON=t=>{try{return JSON.parse(String(t).replace(/```json|```/g,'').trim())}catch(e){const m=String(t).match(/\{[\s\S]*\}/);try{return m?JSON.parse(m[0]):null}catch(e2){return null}}};
+const isPdf=f=>f.type==='application/pdf'||/\.pdf$/i.test(f.name);
+async function pdfPage1(file){const lib=await loadPdf();const doc=await lib.getDocument({data:await file.arrayBuffer()}).promise;return doc.getPage(1)}
+async function renderPage(page,w){const vp=page.getViewport({scale:1}),v2=page.getViewport({scale:w/vp.width});const c=document.createElement('canvas');c.width=v2.width;c.height=v2.height;await page.render({canvasContext:c.getContext('2d'),viewport:v2}).promise;return c}
+
 async function readInbody(file){
   ibBusy='Reading your result…';ibDraft=null;render();let out=null;
-  try{if(!sample)throw 0;
-    if(file.type==='application/pdf'||/\.pdf$/i.test(file.name)){
-      const lib=await loadPdf();const doc=await lib.getDocument({data:await file.arrayBuffer()}).promise;const page=await doc.getPage(1);
-      const tc=await page.getTextContent();const text=tc.items.map(i=>i.str).join(' ').replace(/\s+/g,' ');
-      if(text.length>300)out=await sample.json(IB_PROMPT+'\n\n결과지 텍스트:\n'+text.slice(0,20000),{modelTier:'quick'});
-      else if(imgOK){const vp=page.getViewport({scale:1}),v2=page.getViewport({scale:1700/vp.width});const c=document.createElement('canvas');c.width=v2.width;c.height=v2.height;
-        await page.render({canvasContext:c.getContext('2d'),viewport:v2}).promise;const half=Math.ceil(c.height/2),parts=[];
-        for(const y of [0,half]){const p=document.createElement('canvas');p.width=c.width;p.height=Math.min(half+40,c.height-y);p.getContext('2d').drawImage(c,0,-y);parts.push(await canvasBlob(p))}
-        out=await sample.json(IB_PROMPT+'\n이미지 2장은 결과지 한 장을 위/아래로 나눈 거야.',{images:parts})}
-      else throw 0;
-    }else{if(!imgOK)throw 0;out=await sample.json(IB_PROMPT+'\n이미지는 결과지 사진이야.',{images:[file]})}
+  try{
+    if(sample){
+      if(isPdf(file)){
+        const page=await pdfPage1(file);const tc=await page.getTextContent();const text=tc.items.map(i=>i.str).join(' ').replace(/\s+/g,' ');
+        if(text.length>300)out=await sample.json(IB_PROMPT+'\n\n결과지 텍스트:\n'+text.slice(0,20000),{modelTier:'quick'});
+        else if(imgOK){const c=await renderPage(page,1700);const half=Math.ceil(c.height/2),parts=[];
+          for(const y of [0,half]){const p=document.createElement('canvas');p.width=c.width;p.height=Math.min(half+40,c.height-y);p.getContext('2d').drawImage(c,0,-y);parts.push(await canvasBlob(p))}
+          out=await sample.json(IB_PROMPT+'\n이미지 2장은 결과지 한 장을 위/아래로 나눈 거야.',{images:parts})}
+      }else if(imgOK)out=await sample.json(IB_PROMPT+'\n이미지는 결과지 사진이야.',{images:[file]});
+    }else if(apiKey){
+      const block=isPdf(file)?{type:'document',source:{type:'base64',media_type:'application/pdf',data:await toB64(file)}}
+        :{type:'image',source:{type:'base64',media_type:'image/jpeg',data:await toB64(await shrinkImage(file))}};
+      out=parseJSON(await callAPI([block,{type:'text',text:IB_PROMPT}],'claude-haiku-5-5',600));
+    }else{
+      let text='';
+      if(isPdf(file)){const page=await pdfPage1(file);const tc=await page.getTextContent();text=tc.items.map(i=>i.str).join(' ');
+        if(text.replace(/\s/g,'').length<200){const c=await renderPage(page,2200);text=await ocr(c)}}
+      else text=await ocr(file);
+      out=parseIB(text);
+    }
   }catch(e){out=null}
   ibBusy='';ibDraft={date:TODAY};
-  if(out&&typeof out==='object'){ibDraft._auto=true;if(out.date&&/^\d{4}-\d{2}-\d{2}$/.test(out.date))ibDraft.date=out.date;IBF.forEach(([k])=>{if(out[k]!=null&&out[k]!=='')ibDraft[k]=out[k]})}else ibDraft._fail=true;
+  if(out&&typeof out==='object'&&IBF.some(([k])=>out[k]!=null&&out[k]!=='')){ibDraft._auto=true;if(out.date&&/^\d{4}-\d{2}-\d{2}$/.test(out.date))ibDraft.date=out.date;IBF.forEach(([k])=>{if(out[k]!=null&&out[k]!=='')ibDraft[k]=out[k]})}else ibDraft._fail=true;
   render();
 }
 
+/* ---------- free, rule-based insights ---------- */
+function topReps(reps){const m=String(reps).match(/\d+/g);return m?Math.max(...m.map(Number)):0}
+function insights(){
+  const out={wins:[],next:[],balance:[],body:[]};
+  // consistency
+  const m0=monOf(now),wk=rangeStats(m0,addD(m0,6)),lw=rangeStats(addD(m0,-7),addD(m0,-1));
+  const dayIdx=Math.min(5,dowToday);
+  if(wk.days>=Math.min(4,dayIdx))out.wins.push(`${wk.days} gym day${wk.days===1?'':'s'} this week. On track.`);
+  else out.next.push(`${wk.days} gym day${wk.days===1?'':'s'} so far this week. Aim for 4 by Friday.`);
+  if(lw.sets&&wk.sets>lw.sets&&dowToday>=5)out.wins.push(`${wk.sets} sets this week vs ${lw.sets} last week.`);
+  // per exercise progression
+  const seen=new Set();
+  [1,2,3,4,5].forEach(d=>S.routine[d].items.forEach(it=>{
+    const h=history(it.id);if(!h.length)return;
+    const tw=x=>Math.max(...x.sets.map(s=>num(s.w)));
+    const last=h[h.length-1],w=tw(last),tr=topReps(it.reps);
+    const allHit=tr&&last.sets.length>=it.sets&&last.sets.every(s=>num(s.r)>=tr);
+    const big=/쓰러스트|스쿼트|RDL|thrust|squat|rdl|press|프레스|row|로우|pulldown|풀다운/i.test(it.name);
+    const key=it.name+d;if(seen.has(key))return;seen.add(key);
+    if(w&&allHit)out.next.push(`**${it.name}**: hit ${tr} reps on every set at ${w}kg. Try ${r1(w+(big?2.5:1))}kg next time.`);
+    if(h.length>=3){const ws=h.slice(-3).map(tw);const rs=h.slice(-3).map(x=>x.sets.reduce((a,s)=>a+num(s.r),0));
+      if(w&&ws.every(v=>v===ws[0])&&rs[2]<=rs[0]&&!allHit)out.next.push(`**${it.name}**: stuck at ${w}kg for 3 sessions. Add 1 rep per set before going heavier, or drop 5% and build back.`)}
+    if(h.length>=2){const first=tw(h[0]);if(w&&first&&w>first)out.wins.push(`**${it.name}**: ${first}kg → ${w}kg.`)}
+  }));
+  // balance vs goals (last 4 weeks)
+  const g=groupSets(28),tot=Object.values(g).reduce((a,b)=>a+b,0);
+  if(tot>=10){
+    const gl=g['Glutes & Legs']||0,bk=g['Back & Biceps']||0,co=g['Core']||0,sh=g['Chest & Shoulders']||0;
+    if(gl<bk)out.balance.push(`Glutes are the main goal but got fewer sets (${gl}) than back (${bk}) in 4 weeks. Don't skip Mon/Thu.`);
+    else out.balance.push(`Glutes & legs are ${Math.round(gl/tot*100)}% of your sets. Good fit for the goal.`);
+    if(co/4<6)out.balance.push(`Core: about ${r1(co/4)} sets a week. Aim for 6–9 (finish the sit-ups and planks).`);
+    if(sh===0&&bk>0)out.balance.push(`No chest/shoulder work logged. Wednesday's shoulder press and face pulls help the shoulder line.`);
+  }else out.balance.push('Log a couple of weeks to see how your training is split across muscle groups.');
+  // body
+  const ib=[...S.inbody].sort((a,b)=>a.date<b.date?-1:1),L=ib[ib.length-1],P=ib[ib.length-2];
+  if(!L)out.body.push('Add an InBody scan to track muscle and body fat.');
+  else{
+    if(P){const dm=L.smm!=null&&P.smm!=null?r1(L.smm-P.smm):null,df=L.fat!=null&&P.fat!=null?r1(L.fat-P.fat):(L.pbf!=null&&P.pbf!=null?null:null),dp=L.pbf!=null&&P.pbf!=null?r1(L.pbf-P.pbf):null;
+      if(dm!=null)out.body.push(dm>0?`Muscle up ${dm}kg since ${mdS(P.date)}. The training is working.`:dm<0?`Muscle down ${Math.abs(dm)}kg since ${mdS(P.date)}. Since you gain muscle slowly, make sure you're eating enough overall, with protein at every meal.`:`Muscle unchanged since ${mdS(P.date)}. Keep adding weight on the main lifts.`);
+      if(dp!=null)out.body.push(dp<0?`Body fat ${dp}%p. Leaner while building.`:dp>0?`Body fat +${dp}%p. Fine while building muscle; watch the trend over 2–3 scans.`:`Body fat steady.`);
+    }else out.body.push('One scan so far. Measure again in 4–6 weeks to see the change.');
+    const days=Math.round((now-pd(L.date))/864e5);
+    if(days>42)out.body.push(`Last scan was ${days} days ago. Time for a new one.`);
+    out.body.push('For fair comparisons, scan at the same time of day, before eating or working out.');
+  }
+  return out;
+}
+function insightsHTML(){
+  const i=insights();const sec=(t,arr)=>arr.length?`<h4>${t}</h4><ul>${arr.map(x=>'<li>'+esc(x).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')+'</li>').join('')}</ul>`:'';
+  return `<div class="ai" style="margin-top:0">${sec("What's working",i.wins)}${sec('Next steps',i.next)}${sec('Balance',i.balance)}${sec('Body',i.body)}</div>`;
+}
 /* ---------- AI analysis ---------- */
 function buildData(){const from=ds(addD(now,-56));const exs=[];
   [1,2,3,4,5].forEach(d=>S.routine[d].items.forEach(it=>{const h=history(it.id).filter(x=>x.date>=from);if(h.length)exs.push({운동:it.name,요일:DAYN[d],부위:groupOf(it.name),목표:it.sets+'x'+it.reps,기록횟수:h.length,처음:{날짜:h[0].date,세트:h[0].sets.map(fmtSet)},최근:h.slice(-3).map(x=>({날짜:x.date,세트:x.sets.map(fmtSet)}))})}));
   return {오늘:TODAY,목표:S.goals,루틴:[1,2,3,4,5].map(d=>({요일:DAYN[d],이름:S.routine[d].title,운동:S.routine[d].items.map(i=>i.name+' '+i.sets+'x'+i.reps)})),
     주별:weeklySets(8).map(w=>({주시작:ds(w.a),운동일:w.s.days,세트:w.s.sets,볼륨kg:Math.round(w.s.vol)})),부위별세트_최근4주:groupSets(28),운동별기록_최근8주:exs,
     인바디:[...S.inbody].sort((x,y)=>x.date<y.date?-1:1).map(e=>{const o={날짜:e.date};IBF.forEach(([k,l])=>{if(e[k]!=null&&e[k]!=='')o[l]=e[k]});return o})}}
-async function runAI(){
-  if(!sample||aiBusy)return;aiBusy=true;aiLive='';aiCtl=new AbortController();render();
-  const prompt=`You are a strength coach for a woman in her mid-20s. Below is data from her gym log app (JSON). She lifts on weekdays and runs outdoors on weekends.
+const COACH_PROMPT_HEAD=`You are a strength coach for a woman in her mid-20s. Below is data from her gym log app (JSON). She lifts on weekdays and runs outdoors on weekends.
 Analyze it and give advice grounded in the data. Write in English, short and specific. Always use numbers (weights, sets, changes).
 Format (markdown, use these exact headings):
 ## In one line
@@ -629,16 +738,18 @@ Format (markdown, use these exact headings):
 ## What to improve
 ## Body changes (if there's no InBody or only one scan, say what to measure and when)
 ## Next 2 weeks
-2–4 bullets per section. In the last section name exercises with target weight/sets. When suggesting order, keep hip abduction as the first exercise on glute days. Don't invent data that isn't there; say when logs are missing. No medical diagnosis; for pain, suggest seeing a professional.
-
-Data:
-${JSON.stringify(buildData())}`;
-  try{const {text}=await sample(prompt,{signal:aiCtl.signal,cache:false,onText:({text})=>{aiLive=text;const el=document.getElementById('aiout');if(el)el.innerHTML=md(text)}});
+2–4 bullets per section. In the last section name exercises with target weight/sets. When suggesting order, keep hip abduction as the first exercise on glute days. Don't invent data that isn't there; say when logs are missing. No medical diagnosis; for pain, suggest seeing a professional.`;
+function coachPrompt(){return COACH_PROMPT_HEAD+`\n\nData:\n${JSON.stringify(buildData())}`}
+async function runAI(){
+  if((!sample&&!apiKey)||aiBusy)return;aiBusy=true;aiLive='';aiCtl=new AbortController();render();
+  const prompt=coachPrompt();
+  try{const text=sample?(await sample(prompt,{signal:aiCtl.signal,cache:false,onText:({text})=>{aiLive=text;const el=document.getElementById('aiout');if(el)el.innerHTML=md(text)}})).text:await callAPI([{type:'text',text:prompt}],'claude-sonnet-5-5',2000);
     const d=new Date();S.analysis={text,at:`${md_(d)}, ${pad(d.getHours())}:${pad(d.getMinutes())}`};saveAnalysis();
-  }catch(e){if(e&&e.code==='not_granted')alert('Allow Claude to run the analysis.');else if(e&&e.code==='rate_limited')alert('Try again in a moment.')}
+  }catch(e){if(e&&e.status===401)alert('That API key didn\'t work. Check it and save again.');else if(e&&e.status)alert('Claude API error: '+e.message);else if(e&&e.code==='not_granted')alert('Allow Claude to run the analysis.');else if(e&&e.code==='rate_limited')alert('Try again in a moment.')}
   aiBusy=false;aiLive='';render();
 }
 
+function fallbackCopy(t){const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}ta.remove()}
 /* ---------- timer ---------- */
 const T={end:0,total:0,iv:null};let actx=null,wake=null;
 function beep(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();[0,.25,.5].forEach(t=>{const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=880;g.gain.setValueAtTime(.0001,actx.currentTime+t);g.gain.exponentialRampToValueAtTime(.3,actx.currentTime+t+.02);g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+t+.18);o.connect(g).connect(actx.destination);o.start(actx.currentTime+t);o.stop(actx.currentTime+t+.2)})}catch(e){}}
@@ -672,15 +783,16 @@ view.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)r
   if(act==='finish'){const items=S.routine[sel].items,idx=+b.dataset.ex,it=items[idx];const rec=itemRec(getSession(sel,true),it,true);const n=setCount(it,rec);
     const kept=rec.sets.slice(0,n).filter(x=>x&&x.done);
     if(kept.length){rec.sets=kept;rec.n=kept.length}
-    else{const prev=lastFor(it.id,skey(sel));for(let i=0;i<n;i++){const ps=prev?prev.sets[Math.min(i,prev.sets.length-1)]:null;const cur=rec.sets[i]||{};
-      rec.sets[i]={w:cur.w||(ps&&num(ps.w)?String(num(ps.w)):''),r:cur.r||(ps&&ps.r?String(num(ps.r)||ps.r):String(num(it.reps)||it.reps)),done:true,t:Date.now()}}rec.n=n}
+    else{for(let i=0;i<n;i++){const row=document.querySelector(`.set[data-ex="${idx}"][data-i="${i}"]`);const cur=rec.sets[i]||{};
+      const w=row?row.querySelector('[data-f=w]'):null,r=row?row.querySelector('[data-f=r]'):null;
+      rec.sets[i]={w:w?w.value:(cur.w||''),r:r?(r.value||r.placeholder):(cur.r||String(num(it.reps)||it.reps)),done:true,t:Date.now()}}rec.n=n}
     rec.name=it.name;openEx=null;saveSession(skey(sel));
     const nx=items.findIndex((x,j)=>j>idx&&doneSets(itemRec(getSession(sel,false),x,false)).length<setCount(x,itemRec(getSession(sel,false),x,false)));
     if(nx>-1)startTimer(it.rest,'Next · '+items[nx].name);else stopTimer();
     try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}render();window.scrollTo({top:0,behavior:'smooth'});return}
   if(act==='chk'){const row=b.closest('.set');const items=S.routine[sel].items;const idx=+row.dataset.ex;const it=items[idx];const i=+row.dataset.i;
     const rec=itemRec(getSession(sel,true),it,true);const s=rec.sets[i]=rec.sets[i]||{};
-    if(!s.done){const w=row.querySelector('[data-f=w]'),r=row.querySelector('[data-f=r]');if(!s.w&&w.placeholder)s.w=w.placeholder;if(!s.r&&r.placeholder)s.r=r.placeholder;s.done=true;s.t=Date.now();
+    if(!s.done){const w=row.querySelector('[data-f=w]'),r=row.querySelector('[data-f=r]');s.w=w.value;s.r=r.value||r.placeholder;s.done=true;s.t=Date.now();
       const n=setCount(it,rec),allDone=doneSets(rec).slice(0,n).length>=n;
       const nxIdx=rec.sets.findIndex((x,j)=>j>i&&!(x&&x.done));const nextSet=nxIdx>-1?nxIdx:(i+1<n?i+1:-1);
       if(nextSet>-1){const nx=rec.sets[nextSet];if(s.w&&(!nx||!nx.w))rec.sets[nextSet]=Object.assign({},nx||{},{w:s.w})}
@@ -688,6 +800,7 @@ view.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)r
       if(nextName)startTimer(it.rest,'Next · '+nextName);else stopTimer();try{navigator.vibrate&&navigator.vibrate(15)}catch(e){}
     }else s.done=false;
     rec.name=it.name;saveSession(skey(sel));render();return}
+  if(act==='rename'){const it=S.routine[sel].items[+b.dataset.ex];const v=prompt('Exercise name',it.name);if(v&&v.trim()&&v.trim()!==it.name){it.name=v.trim();const sess=getSession(sel,false);if(sess&&sess.items[it.id])sess.items[it.id].name=it.name;saveState();saveSession(skey(sel));render()}return}
   if(act==='addset'||act==='rmset'){const it=S.routine[sel].items[+b.dataset.ex];const rec=itemRec(getSession(sel,true),it,true);const n=setCount(it,rec);
     rec.n=act==='addset'?Math.min(12,n+1):Math.max(1,n-1);if(rec.sets.length>rec.n)rec.sets.length=rec.n;saveSession(skey(sel));render();return}
   if(act==='mode'){calMode=b.dataset.m;render();return}
@@ -695,15 +808,19 @@ view.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)r
   if(act==='cal'){calSel=b.dataset.d;render();return}
   if(act==='rec'){const id=b.dataset.id;openRec.has(id)?openRec.delete(id):openRec.add(id);render();return}
   if(act==='ibm'){ibMetric=b.dataset.m;render();return}
-  if(act==='ibadd'){if(sample)fileEl.click();else{ibDraft={date:TODAY};render()}return}
+  if(act==='ibadd'){fileEl.click();return}
+  if(act==='keysave'){const v=(document.getElementById('apikey')||{}).value||'';apiKey=v.trim();try{apiKey?localStorage.setItem(KEY_LS,apiKey):localStorage.removeItem(KEY_LS)}catch(e){}render();return}
+  if(act==='keyrm'){if(confirm('Remove the API key from this phone?')){apiKey='';try{localStorage.removeItem(KEY_LS)}catch(e){}render()}return}
   if(act==='ibmanual'){ibDraft={date:TODAY};render();return}
   if(act==='ibcancel'){ibDraft=null;render();return}
   if(act==='ibsave'){const e2={id:uid_(),date:ibDraft.date||TODAY};IBF.forEach(([k])=>{const v=ibDraft[k];if(v!==undefined&&v!==''&&!isNaN(parseFloat(v)))e2[k]=parseFloat(v)});
     S.inbody=S.inbody.filter(x=>x.date!==e2.date);S.inbody.push(e2);ibDraft=null;saveInbody();render();return}
   if(act==='ibdel'){if(confirm('Delete this scan?')){S.inbody=S.inbody.filter(x=>x.id!==b.dataset.id);saveInbody();render()}return}
   if(act==='ai'){runAI();return}
+  if(act==='copyai'){const t=coachPrompt();const done=()=>{b.textContent='Copied! Paste it into Claude';setTimeout(()=>{b.textContent='Copy data for Claude'},2500)};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done,()=>{fallbackCopy(t);done()});else{fallbackCopy(t);done()}return}
   if(act==='aistop'){aiCtl&&aiCtl.abort();return}
-  if(act==='add'){S.routine[sel].items.push(ex('New exercise',3,'10',90));saveState();render();return}
+  if(act==='add'){S.routine[sel].items.push(ex('New exercise',3,'10',60));saveState();render();return}
   if(act==='del'){const i=+b.closest('.ed').dataset.ex;const it=S.routine[sel].items[i];if(confirm(`Remove '${it.name}' from this routine? Past logs stay.`)){S.routine[sel].items.splice(i,1);saveState();render()}return}
   if(act==='up'){const i=+b.closest('.ed').dataset.ex;if(i>0){const a=S.routine[sel].items;[a[i-1],a[i]]=[a[i],a[i-1]];saveState();render()}return}
   if(act==='reset'){if(confirm(`Reset ${DAYF[sel]} to the default routine? Past logs stay.`)){const old=S.routine[sel].items;const fr=defaultRoutine()[sel];fr.items.forEach(it=>{const m=old.find(o=>o.name===it.name);if(m)it.id=m.id});S.routine[sel]=fr;saveState();render()}return}
